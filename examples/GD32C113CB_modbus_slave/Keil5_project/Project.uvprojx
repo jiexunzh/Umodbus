@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,GD32C11X</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS;..\Libraries\CMSIS\GD\GD32C11x\Include;..\Libraries\GD32C11x_standard_peripheral\Include;..\Bsp;..\App</IncludePath>
+              <IncludePath>..\Libraries\CMSIS;..\Libraries\CMSIS\GD\GD32C11x\Include;..\Libraries\GD32C11x_standard_peripheral\Include;..\Bsp;..\App;..\Utils</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -392,6 +392,16 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\App\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>modbus_registers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\modbus_registers.c</FilePath>
+            </File>
+            <File>
+              <FileName>modbus_common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\modbus_common.c</FilePath>
             </File>
           </Files>
         </Group>
