@@ -9,7 +9,6 @@
  * **********************************************************************************
  */
 #include "modbus_common.h"
-#include "modbus_registers.h"
 
 static void write_high_16bits(uint32_t* p_data32, uint16_t data16);
 static void write_low_16bits(uint32_t* p_data32, uint16_t data16);
@@ -20,46 +19,49 @@ static void write_low_16bits(uint32_t* p_data32, uint16_t data16);
  * @param  p_read 读取返回值指针
  * @retval 读取结果
  */
-RegRead_TypeDef read_modbus_reg(uint16_t reg_addr, uint16_t* p_read)
+RegRead_TypeDef read_modbus_reg(const ModbusReg_TypeDef* MB_REG,
+                                const uint16_t MB_DATA_NUM,
+                                uint16_t reg_addr,
+                                uint16_t* p_read)
 {
     uint16_t value = 0;
     RegRead_TypeDef RegRead_state = RegRead_ADDR_ERROR;
     uint16_t i;
 
     /* 遍历Modbus寄存器数据映射表 */
-    for (i = 0; i < MODBUS_DATA_NUM; i++)
+    for (i = 0; i < MB_DATA_NUM; i++)
     {
         /* 数据使用1个Modbus寄存器（8位或16位数据） */
-        if (MODBUS_REGISTERS[i].data_type == USE_ONE_REG_8BIT || MODBUS_REGISTERS[i].data_type == USE_ONE_REG_16BIT)
+        if (MB_REG[i].data_type == USE_ONE_REG_8BIT || MB_REG[i].data_type == USE_ONE_REG_16BIT)
         {
             /* reg_addr == 起始地址 */
-            if (reg_addr == MODBUS_REGISTERS[i].start_addr)
+            if (reg_addr == MB_REG[i].start_addr)
             {
-                if (MODBUS_REGISTERS[i].data_type == USE_ONE_REG_8BIT) /* 8位数据 */
+                if (MB_REG[i].data_type == USE_ONE_REG_8BIT) /* 8位数据 */
                 {
-                    value = *(uint8_t*)MODBUS_REGISTERS[i].p_data;
+                    value = *(uint8_t*)MB_REG[i].p_data;
                 }
                 else /* 16位数据 */
                 {
-                    value = *(uint16_t*)MODBUS_REGISTERS[i].p_data;
+                    value = *(uint16_t*)MB_REG[i].p_data;
                 }
                 RegRead_state = RegRead_SUCCESS;
                 break;
             }
         }
         /* 数据使用2个Modbus寄存器（32位数据） */
-        else if (MODBUS_REGISTERS[i].data_type == USE_TWO_REG_32BIT)
+        else if (MB_REG[i].data_type == USE_TWO_REG_32BIT)
         {
             /* reg_addr == 起始地址 || 起始地址 + 1 */
-            if (reg_addr == MODBUS_REGISTERS[i].start_addr || reg_addr == MODBUS_REGISTERS[i].start_addr + 1)
+            if (reg_addr == MB_REG[i].start_addr || reg_addr == MB_REG[i].start_addr + 1)
             {
-                if (reg_addr == MODBUS_REGISTERS[i].start_addr) /* 低地址寄存器 */
+                if (reg_addr == MB_REG[i].start_addr) /* 低地址寄存器 */
                 {
-                    value = (*(uint32_t*)MODBUS_REGISTERS[i].p_data) >> 16; /* 低地址寄存器存放32位数据的高16位 */
+                    value = (*(uint32_t*)MB_REG[i].p_data) >> 16; /* 低地址寄存器存放32位数据的高16位 */
                 }
                 else /* 高地址寄存器 */
                 {
-                    value = (*(uint32_t*)MODBUS_REGISTERS[i].p_data) & 0xffff; /* 高地址寄存器存放数据的低16位 */
+                    value = (*(uint32_t*)MB_REG[i].p_data) & 0xffff; /* 高地址寄存器存放数据的低16位 */
                 }
                 RegRead_state = RegRead_SUCCESS;
                 break;
@@ -81,50 +83,53 @@ RegRead_TypeDef read_modbus_reg(uint16_t reg_addr, uint16_t* p_read)
  * @param  reg_value 写入值
  * @retval 写入结果
  */
-RegWrite_TypeDef write_modbus_reg(uint16_t reg_addr, uint16_t reg_value)
+RegWrite_TypeDef write_modbus_reg(const ModbusReg_TypeDef* MB_REG,
+                                  const uint16_t MB_DATA_NUM,
+                                  uint16_t reg_addr,
+                                  uint16_t reg_value)
 {
     uint16_t i;
 
     /* 遍历Modbus寄存器数据映射表 */
-    for (i = 0; i < MODBUS_DATA_NUM; i++)
+    for (i = 0; i < MB_DATA_NUM; i++)
     {
         /* 数据使用1个Modbus寄存器（8位或16位数据） */
-        if (MODBUS_REGISTERS[i].data_type == USE_ONE_REG_8BIT || MODBUS_REGISTERS[i].data_type == USE_ONE_REG_16BIT)
+        if (MB_REG[i].data_type == USE_ONE_REG_8BIT || MB_REG[i].data_type == USE_ONE_REG_16BIT)
         {
-            if (reg_addr == MODBUS_REGISTERS[i].start_addr)
+            if (reg_addr == MB_REG[i].start_addr)
             {
-                if (MODBUS_REGISTERS[i].access_type == ONLY_READ)
+                if (MB_REG[i].access_type == ONLY_READ)
                 {
                     return RegWrite_ACCESS_ERROR;
                 }
-                if (MODBUS_REGISTERS[i].data_type == USE_ONE_REG_8BIT) /* 8位数据 */
+                if (MB_REG[i].data_type == USE_ONE_REG_8BIT) /* 8位数据 */
                 {
-                    *(uint8_t*)MODBUS_REGISTERS[i].p_data = (reg_value & 0xFF);
+                    *(uint8_t*)MB_REG[i].p_data = (reg_value & 0xFF);
                 }
                 else /* 16位数据 */
                 {
-                    *(uint16_t*)MODBUS_REGISTERS[i].p_data = reg_value;
+                    *(uint16_t*)MB_REG[i].p_data = reg_value;
                 }
                 return RegWrite_SUCCESS;
             }
         }
         /* 数据使用2个Modbus寄存器（32位数据） */
-        else if (MODBUS_REGISTERS[i].data_type == USE_TWO_REG_32BIT)
+        else if (MB_REG[i].data_type == USE_TWO_REG_32BIT)
         {
             /* 判断寄存器地址 */
-            if (reg_addr == MODBUS_REGISTERS[i].start_addr || reg_addr == MODBUS_REGISTERS[i].start_addr + 1)
+            if (reg_addr == MB_REG[i].start_addr || reg_addr == MB_REG[i].start_addr + 1)
             {
-                if (MODBUS_REGISTERS[i].access_type == ONLY_READ)
+                if (MB_REG[i].access_type == ONLY_READ)
                 {
                     return RegWrite_ACCESS_ERROR;
                 }
-                if (reg_addr == MODBUS_REGISTERS[i].start_addr) /* 低地址寄存器 */
+                if (reg_addr == MB_REG[i].start_addr) /* 低地址寄存器 */
                 {
-                    write_high_16bits((uint32_t*)MODBUS_REGISTERS[i].p_data, reg_value); /* 将值写入到32位数据的高16位 */
+                    write_high_16bits((uint32_t*)MB_REG[i].p_data, reg_value); /* 将值写入到32位数据的高16位 */
                 }
                 else /* 高地址寄存器 */
                 {
-                    write_low_16bits((uint32_t*)MODBUS_REGISTERS[i].p_data, reg_value); /* 将值写入到32位数据的低16位 */
+                    write_low_16bits((uint32_t*)MB_REG[i].p_data, reg_value); /* 将值写入到32位数据的低16位 */
                 }
                 return RegWrite_SUCCESS;
             }

@@ -408,6 +408,11 @@
               <FileType>1</FileType>
               <FilePath>..\App\modbus_common.c</FilePath>
             </File>
+            <File>
+              <FileName>modbus_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\modbus_port.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -422,21 +427,6 @@
               <FileName>bsp_led.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Bsp\bsp_led.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\bsp_dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\bsp_usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>nvic_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Bsp\nvic_config.h</FilePath>
             </File>
           </Files>
         </Group>

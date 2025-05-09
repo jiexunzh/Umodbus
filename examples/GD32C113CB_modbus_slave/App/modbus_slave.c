@@ -1,33 +1,79 @@
 #include "modbus_slave.h"
+#include "modbus_port.h"
 #include <string.h>
 
-static ModbusSlave_TypeDef modbus_slave = {0};
+static ModbusSlave_TypeDef mbslave = {0};
 
-void modbus_slave_init(void)
+uint8_t mbslave_init(uint8_t slave_addr, const ModbusReg_TypeDef* MB_REG, const uint16_t MB_DATA_NUM)
 {
-    /* 信息初始化 */
+    /* 传参检查 */
+    if (slave_addr < 1 || slave_addr > 247)
+    {
+        return FALSE;
+    }
 
-    /* Modbus接收初始化 */
+    mbslave.addr = slave_addr;
+    mbslave.MB_REG = MB_REG;
+    mbslave.mb_data_num = MB_DATA_NUM;
+
+    /* 硬件初始化 */
+    mbslave_hardware_init();
+
+    return TRUE;
 }
 
-void modbus_slave_poll(void)
+void mbslave_poll(void)
 {
-    /* 接收到一帧完整的Modbus报文 */
-    if (modbus_slave.is_recv_finish() == TRUE)
+    switch (mbslave.sta)
     {
-        /* 获取Modbus报文长度 */
-        modbus_slave.recv_len = modbus_slave.get_recv_len();
-
-        /* 判断接收长度是否合法 */
-
-        /* 判断从站地址 */
-
-        /* CRC校验 */
-
-        /* Modbus报文处理 */
-
-        /* Modbus应答报文发送 */
-
-        /* Modbus接收初始化 */
+    case RECV_INIT:
+        /* 接收缓冲初始化 */
+        memset(mbslave.recv_buf, 0, mbslave.recv_buf_len);
+        /* 设置接收模式 */
+        set_485_recv_mode();
+        mbslave.sta = RECVING;
+        break;
+    case RECVING:
+        if (is_modbus_recv_finish() == TRUE)
+        {
+            claer_recv_finish_flag();
+            mbslave.sta = VERIFY;
+        }
+        break;
+    case VERIFY: /* 校验Modbus帧基本结构、从站地址 */
+        mbslave.recv_len = get_modbus_recv_len();
+        if (is_verify_ok(mbslave.addr, mbslave.recv_buf, mbslave.recv_len) == TRUE)
+        {
+            mbslave.sta = VERIFY;
+        }
+        else
+        {
+            mbslave.sta = RECV_INIT;
+        }
+        break;
+    case ANALYSIS:
+        /* 发送缓冲初始化 */
+        memset(mbslave.send_buf, 0, mbslave.send_buf_len);
+        /* 解析Modbus */
+        mbslave.send_len = modbus_analysis(mbslave.MB_REG,
+                                           mbslave.mb_data_num,
+                                           mbslave.recv_buf,
+                                           mbslave.recv_len,
+                                           mbslave.send_buf);
+        /* 设置发送模式 */
+        set_485_send_mode();
+        /* 使能发送 */
+        modbus_send_enable(mbslave.send_buf, mbslave.send_buf_len);
+        mbslave.sta = SENDING;
+        break;
+    case SENDING:
+        if (is_modbus_send_finish() == TRUE)
+        {
+            claer_send_finish_flag();
+            mbslave.sta = RECV_INIT;
+        }
+        break;
+    default:
+        break;
     }
 }
