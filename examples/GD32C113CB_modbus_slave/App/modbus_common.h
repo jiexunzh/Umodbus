@@ -11,8 +11,8 @@
 
 #include <stdint.h>
 
-#define TRUE               (1)
-#define FALSE              (0)
+#define TRUE               ((uint8_t)(1))
+#define FALSE              ((uint8_t)(0))
 
 typedef enum
 {

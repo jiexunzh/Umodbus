@@ -5,12 +5,16 @@
 
 typedef enum
 {
-    RECV_INIT, /* 接收初始化 */
-    RECVING,   /* 接收中 */
-    VERIFY,    /* 校验 */
-    ANALYSIS,  /* 解析 */
-    SENDING,   /* 发送中 */
+    RECV_ENABLE, /* 接收使能 */
+    RECVING,     /* 接收中 */
+    VERIFY,      /* 校验 */
+    ANALYSIS,    /* 解析 */
+    SEND_ENABLE, /* 发送使能 */
+    SENDING,     /* 发送中 */
+    SENT,        /* 发送完成 */
 } SLAVE_STA;
+
+typedef uint32_t (*pGetTickFunc)(void);
 
 typedef struct
 {
@@ -20,10 +24,11 @@ typedef struct
     uint16_t send_len;
     uint16_t recv_buf_len;
     uint16_t send_buf_len;
-    uint16_t mb_data_num;
+    uint16_t map_num;
     uint8_t* recv_buf;
     uint8_t* send_buf;
-    const ModbusReg_TypeDef* MB_REG;
+    const ModbusReg_TypeDef* mb_reg_map;
+    pGetTickFunc get_tick_ms;
 } ModbusSlave_TypeDef;
 
 #endif /* MODBUS_SLAVE_H */

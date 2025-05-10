@@ -17,7 +17,7 @@ float fMapMem[3];       // 32位数据类型
     注意：32位数据需占用两个连续的寄存器，所以32位数据后的地址必须+2，
     暂时没有添加地址合法性检查代码，使用时需注意数据地址不要重合。
  */
-const ModbusReg_TypeDef MODBUS_REGISTERS[] = {
+const ModbusReg_TypeDef MODBUS_REG_MAP[] = {
     {0x0000, USE_ONE_REG_8BIT, READ_WRITE, &u8MapMem[0]}, /* 0x0000 */
     {0x0001, USE_ONE_REG_8BIT, READ_WRITE, &u8MapMem[1]}, /* 0x0001 */
     {0x0002, USE_ONE_REG_8BIT, ONLY_READ, &u8MapMem[2]},  /* 0x0002 */
@@ -35,5 +35,5 @@ const ModbusReg_TypeDef MODBUS_REGISTERS[] = {
     {0x0304, USE_TWO_REG_32BIT, ONLY_READ, &fMapMem[2]},
 };
 
-/* modbus寄存器（数据）个数 */
-const uint16_t MODBUS_DATA_NUM = sizeof(MODBUS_REGISTERS) / sizeof(ModbusReg_TypeDef);
+/* Modbus寄存器映射（数据）个数 */
+const uint16_t MODBUS_MAP_NUM = sizeof(MODBUS_REG_MAP) / sizeof(ModbusReg_TypeDef);
