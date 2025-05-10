@@ -3,32 +3,14 @@
 
 #include "modbus_common.h"
 
-typedef enum
-{
-    RECV_ENABLE, /* 接收使能 */
-    RECVING,     /* 接收中 */
-    VERIFY,      /* 校验 */
-    ANALYSIS,    /* 解析 */
-    SEND_ENABLE, /* 发送使能 */
-    SENDING,     /* 发送中 */
-    SENT,        /* 发送完成 */
-} SLAVE_STA;
-
-typedef uint32_t (*pGetTickFunc)(void);
-
-typedef struct
-{
-    uint8_t addr;
-    SLAVE_STA sta;
-    uint16_t recv_len;
-    uint16_t send_len;
-    uint16_t recv_buf_len;
-    uint16_t send_buf_len;
-    uint16_t map_num;
-    uint8_t* recv_buf;
-    uint8_t* send_buf;
-    const ModbusReg_TypeDef* mb_reg_map;
-    pGetTickFunc get_tick_ms;
-} ModbusSlave_TypeDef;
+uint8_t mbslave_init(uint8_t slave_addr,
+                     const ModbusReg_TypeDef* REG_MAP_TABLE,
+                     const uint16_t MAP_NUM,
+                     uint8_t* recv_buf,
+                     uint8_t* send_buf,
+                     const uint16_t RECV_BUF_LEN,
+                     const uint16_t SEND_BUF_LEN,
+                     pGetTickFunc get_tick_ms);
+void mbslave_poll(void);
 
 #endif /* MODBUS_SLAVE_H */

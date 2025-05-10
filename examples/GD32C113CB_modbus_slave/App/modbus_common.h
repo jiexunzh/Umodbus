@@ -1,18 +1,11 @@
-/**
- * *********************************************************************************
- * @author ZJX
- * @note 定义读写Modbus保持寄存器通用接口
- *
- * **********************************************************************************
- */
 
 #ifndef MODBUS_COMMON_H
 #define MODBUS_COMMON_H
 
 #include <stdint.h>
 
-#define TRUE               ((uint8_t)(1))
-#define FALSE              ((uint8_t)(0))
+#define TRUE  ((uint8_t)(1))
+#define FALSE ((uint8_t)(0))
 
 typedef enum
 {
@@ -37,26 +30,40 @@ typedef struct
 
 typedef enum
 {
-    RegRead_SUCCESS = 0, /*!< 寄存器读取成功 */
-    RegRead_ADDR_ERROR,  /*!< 寄存器地址错误（地址不存在） */
-} RegRead_TypeDef;
+    RECV_ENABLE, /*!< 接收使能 */
+    RECVING,     /*!< 接收中 */
+    VERIFY,      /*!< 校验 */
+    ANALYSIS,    /*!< 解析 */
+    SEND_ENABLE, /*!< 发送使能 */
+    SENDING,     /*!< 发送中 */
+    SENT,        /*!< 发送完成 */
+} SlaveSta_TypeDef;
 
+typedef uint32_t (*pGetTickFunc)(void);
+
+typedef struct
+{
+    uint8_t addr;
+    SlaveSta_TypeDef sta;
+    uint16_t recv_len;
+    uint16_t send_len;
+    uint16_t recv_buf_len;
+    uint16_t send_buf_len;
+    uint16_t map_num;
+    uint8_t* recv_buf;
+    uint8_t* send_buf;
+    const ModbusReg_TypeDef* reg_map_table;
+    pGetTickFunc get_tick_ms;
+} ModbusSlave_TypeDef;
+
+/* modbus异常码 */
 typedef enum
 {
-    RegWrite_SUCCESS = 0,  /*!< 寄存器写入成功 */
-    RegWrite_ADDR_ERROR,   /*!< 寄存器地址（地址不存在） */
-    RegWrite_ACCESS_ERROR, /*!< 寄存器不允许写入 */
-} RegWrite_TypeDef;
-
-/* 读取指定地址的Modbus寄存器 */
-RegRead_TypeDef read_modbus_reg(const ModbusReg_TypeDef* MB_REG,
-                                const uint16_t MB_DATA_NUM,
-                                uint16_t reg_addr,
-                                uint16_t* p_read);
-/* 写入指定地址的Modbus寄存器 */
-RegWrite_TypeDef write_modbus_reg(const ModbusReg_TypeDef* MB_REG,
-                                  const uint16_t MB_DATA_NUM,
-                                  uint16_t reg_addr,
-                                  uint16_t reg_value);
+    RSP_OK = 0,                 /*!< 成功，无异常 */
+    IllegalFunctionCode = 0x01, /*!< 不支持的功能码 */
+    IllegalRegAddr = 0x02,      /*!< 非法寄存器地址 */
+    IllegalValue = 0x03,        /*!< 非法数据值：表示组合请求中剩余部分结构方面的错误，例如：隐含长度不正确 */
+    IllegalWrite = 0x04,        /*!< 寄存器写入失败（不可写入） */
+} ExceptionCode_TypeDef;
 
 #endif /* MODBUS_COMMON_H */

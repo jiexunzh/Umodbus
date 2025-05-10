@@ -1,18 +1,16 @@
 #include "modbus_slave.h"
+#include "crc16.h"
 #include "modbus_port.h"
+#include "modbus_process.h"
 #include <string.h>
 
 static uint8_t modbus_verify(uint8_t slave_addr, uint8_t* recv_buf, uint8_t recv_len);
-static uint16_t modbus_analysis(const ModbusReg_TypeDef* MB_REG_MAP,
-                                const uint16_t MAP_NUM,
-                                uint8_t* recv_buf,
-                                uint8_t recv_len,
-                                uint8_t* send_buf);
+static void modbus_analysis(ModbusSlave_TypeDef* p_mbslave);
 
 static ModbusSlave_TypeDef mbslave = {0};
 
 uint8_t mbslave_init(uint8_t slave_addr,
-                     const ModbusReg_TypeDef* MB_REG_MAP,
+                     const ModbusReg_TypeDef* REG_MAP_TABLE,
                      const uint16_t MAP_NUM,
                      uint8_t* recv_buf,
                      uint8_t* send_buf,
@@ -27,7 +25,7 @@ uint8_t mbslave_init(uint8_t slave_addr,
     }
 
     mbslave.addr = slave_addr;
-    mbslave.mb_reg_map = MB_REG_MAP;
+    mbslave.reg_map_table = REG_MAP_TABLE;
     mbslave.map_num = MAP_NUM;
     mbslave.recv_buf = recv_buf;
     mbslave.send_buf = send_buf;
@@ -61,7 +59,7 @@ void mbslave_poll(void)
             mbslave.sta = VERIFY;
         }
         break;
-    case VERIFY: /* 校验Modbus帧基本结构、从站地址 */
+    case VERIFY: /* 校验Modbus帧从站地址、CRC */
         mbslave.recv_len = get_modbus_recv_len();
         if (modbus_verify(mbslave.addr, mbslave.recv_buf, mbslave.recv_len) == TRUE)
         {
@@ -69,6 +67,7 @@ void mbslave_poll(void)
         }
         else
         {
+            /* 校验不通过则不应答 */
             mbslave.sta = RECV_ENABLE;
         }
         break;
@@ -76,18 +75,14 @@ void mbslave_poll(void)
         /* 发送缓冲初始化 */
         memset(mbslave.send_buf, 0, mbslave.send_buf_len);
         /* 解析Modbus */
-        mbslave.send_len = modbus_analysis(mbslave.mb_reg_map,
-                                           mbslave.map_num,
-                                           mbslave.recv_buf,
-                                           mbslave.recv_len,
-                                           mbslave.send_buf);
+        modbus_analysis(&mbslave);
         mbslave.sta = SEND_ENABLE;
         break;
     case SEND_ENABLE:
         /* 设置发送模式 */
         set_485_send_mode();
         /* 使能发送 */
-        modbus_send_enable(mbslave.send_buf, mbslave.send_buf_len);
+        modbus_send_enable(mbslave.send_buf, mbslave.send_len);
         mbslave.sta = SENDING;
         break;
     case SENDING:
@@ -111,16 +106,48 @@ void mbslave_poll(void)
 
 static uint8_t modbus_verify(uint8_t slave_addr, uint8_t* recv_buf, uint8_t recv_len)
 {
+    uint16_t crc16;
+    uint8_t crc_l, crc_h;
 
-    return 0;
+    if (slave_addr != recv_buf[0])
+    {
+        return FALSE;
+    }
+
+    if (recv_len < 4)
+    {
+        return FALSE;
+    }
+
+    crc16 = crc16_modbus(recv_buf, recv_len - 2);
+    crc_l = crc16 & 0xFF;        /* crc16 低八位 */
+    crc_h = (crc16 >> 8) & 0xFF; /* crc16 高八位 */
+    if (crc_l == recv_buf[recv_len - 2] && crc_h == recv_buf[recv_len - 1])
+    {
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
 }
 
-static uint16_t modbus_analysis(const ModbusReg_TypeDef* MB_REG_MAP,
-                                const uint16_t MAP_NUM,
-                                uint8_t* recv_buf,
-                                uint8_t recv_len,
-                                uint8_t* send_buf)
+static void modbus_analysis(ModbusSlave_TypeDef* p_mbslave)
 {
+    switch (p_mbslave->recv_buf[1])
+    {
+    case 0x03:
+        modbus_03H_process(p_mbslave);
+        break;
 
-    return 0;
+    case 0x10:
+        modbus_10H_process(p_mbslave);
+        break;
+
+    default:
+        generate_exception_ack(p_mbslave, IllegalFunctionCode);
+        break;
+    }
+
+    generate_crc_modbus(p_mbslave);
 }

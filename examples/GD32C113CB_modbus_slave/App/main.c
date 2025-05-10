@@ -1,5 +1,7 @@
 #include "bsp_systick.h"
 #include "bsp_led.h"
+#include "modbus_registers.h"
+#include "modbus_slave.h"
 
 int main(void)
 {
@@ -8,8 +10,9 @@ int main(void)
 
     while (1)
 	{
-		LED_Toggle();
-		delay_ms(500);
+		// mbslave_poll();
+		// LED_Toggle();
+		// delay_ms(2);
     }
 }
 

@@ -32,7 +32,7 @@ uint16_t get_modbus_recv_len(void)
     return 0;
 }
 
-void modbus_send_enable(uint8_t* send_buf, uint16_t send_buf_len)
+void modbus_send_enable(uint8_t* send_buf, uint16_t send_len)
 {
 
 }

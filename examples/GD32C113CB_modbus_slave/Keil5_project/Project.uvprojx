@@ -404,9 +404,14 @@
               <FilePath>..\App\modbus_slave.c</FilePath>
             </File>
             <File>
-              <FileName>modbus_common.c</FileName>
+              <FileName>modbus_process.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\App\modbus_common.c</FilePath>
+              <FilePath>..\App\modbus_process.c</FilePath>
+            </File>
+            <File>
+              <FileName>modbus_basic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\modbus_basic.c</FilePath>
             </File>
             <File>
               <FileName>modbus_port.c</FileName>
@@ -427,6 +432,21 @@
               <FileName>bsp_led.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Bsp\bsp_led.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utils</GroupName>
+          <Files>
+            <File>
+              <FileName>crc16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Utils\crc16.c</FilePath>
+            </File>
+            <File>
+              <FileName>data_convert.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Utils\data_convert.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -472,21 +492,6 @@
               <FileName>startup_gd32c11x.s</FileName>
               <FileType>2</FileType>
               <FilePath>..\Libraries\CMSIS\GD\GD32C11x\Source\ARM\startup_gd32c11x.s</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Utils</GroupName>
-          <Files>
-            <File>
-              <FileName>crc16.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Utils\crc16.c</FilePath>
-            </File>
-            <File>
-              <FileName>data_convert.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Utils\data_convert.c</FilePath>
             </File>
           </Files>
         </Group>

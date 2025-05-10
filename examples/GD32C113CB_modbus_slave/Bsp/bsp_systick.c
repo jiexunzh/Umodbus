@@ -87,9 +87,9 @@ void delay_ms(uint32_t nms)
 }
 
 /**
-  * @brief  使用“空指令”实现粗糙的微秒延时。在比Level0更高Level可能会失效可能会变得不精确。
-  *         适用于主频为120Mhz的MCU。
-            经验证，延时20us时，实际延时为20.015us。10us为10.180us。（Level0）
+  * @brief  “空指令”实现粗糙的微秒延时，适用于主频为120Mhz的MCU。
+			使用 GD32C113CB AC5.06 Level0 120Mhz 验证：
+			没有其他中断干扰下，延时20us时，实际延时为20.015us。10us为10.180us。
   * @param  count 延时微秒数
   * @retval
   */
