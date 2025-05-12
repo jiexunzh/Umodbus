@@ -32,14 +32,11 @@ typedef enum
 {
     RECV_ENABLE, /*!< 接收使能 */
     RECVING,     /*!< 接收中 */
-    VERIFY,      /*!< 校验 */
+    VERIFY,      /*!< 校验Modbus帧从站地址、CRC */
     ANALYSIS,    /*!< 解析 */
     SEND_ENABLE, /*!< 发送使能 */
     SENDING,     /*!< 发送中 */
-    SENT,        /*!< 发送完成 */
 } SlaveSta_TypeDef;
-
-typedef uint32_t (*pGetTickFunc)(void);
 
 typedef struct
 {
@@ -53,7 +50,6 @@ typedef struct
     uint8_t* recv_buf;
     uint8_t* send_buf;
     const ModbusReg_TypeDef* reg_map_table;
-    pGetTickFunc get_tick_ms;
 } ModbusSlave_TypeDef;
 
 /* modbus异常码 */

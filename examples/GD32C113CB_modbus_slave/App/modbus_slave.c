@@ -15,8 +15,7 @@ uint8_t mbslave_init(uint8_t slave_addr,
                      uint8_t* recv_buf,
                      uint8_t* send_buf,
                      const uint16_t RECV_BUF_LEN,
-                     const uint16_t SEND_BUF_LEN,
-                     pGetTickFunc get_tick_ms)
+                     const uint16_t SEND_BUF_LEN)
 {
     /* 传参检查 */
     if (slave_addr < 1 || slave_addr > 247)
@@ -31,36 +30,30 @@ uint8_t mbslave_init(uint8_t slave_addr,
     mbslave.send_buf = send_buf;
     mbslave.recv_buf_len = RECV_BUF_LEN;
     mbslave.send_buf_len = SEND_BUF_LEN;
-    mbslave.get_tick_ms = get_tick_ms;
-
-    /* 硬件初始化 */
-    mbslave_hardware_init();
 
     return TRUE;
 }
 
 void mbslave_poll(void)
 {
-    static uint32_t sent_tick; /* 记录发送完成时刻 */
-
     switch (mbslave.sta)
     {
     case RECV_ENABLE:
         /* 接收缓冲初始化 */
         memset(mbslave.recv_buf, 0, mbslave.recv_buf_len);
-        /* 设置接收模式 */
-        set_485_recv_mode();
+        /* 485接收使能 */
+        rs485_recv_enable();
         mbslave.sta = RECVING;
         break;
     case RECVING:
-        if (is_modbus_recv_finish() == TRUE)
+        if (is_rs485_recv_finish() == TRUE)
         {
-            claer_recv_finish_flag();
+            /* 获取RS485数据接收长度 */
+            mbslave.recv_len = get_rs485_recv_len();
             mbslave.sta = VERIFY;
         }
         break;
-    case VERIFY: /* 校验Modbus帧从站地址、CRC */
-        mbslave.recv_len = get_modbus_recv_len();
+    case VERIFY:
         if (modbus_verify(mbslave.addr, mbslave.recv_buf, mbslave.recv_len) == TRUE)
         {
             mbslave.sta = ANALYSIS;
@@ -79,22 +72,12 @@ void mbslave_poll(void)
         mbslave.sta = SEND_ENABLE;
         break;
     case SEND_ENABLE:
-        /* 设置发送模式 */
-        set_485_send_mode();
-        /* 使能发送 */
-        modbus_send_enable(mbslave.send_buf, mbslave.send_len);
+        /* 485发送使能 */
+        rs485_send_enable(mbslave.send_len);
         mbslave.sta = SENDING;
         break;
     case SENDING:
-        if (is_modbus_send_finish() == TRUE)
-        {
-            claer_send_finish_flag();
-            sent_tick = mbslave.get_tick_ms();
-            mbslave.sta = SENT;
-        }
-    case SENT:
-        /* 短暂延时，确保数据已全部发送出串口 */
-        if ((mbslave.get_tick_ms() - sent_tick) >= 2)
+        if (is_rs485_send_finish() == TRUE)
         {
             mbslave.sta = RECV_ENABLE;
         }

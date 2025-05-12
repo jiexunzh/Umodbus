@@ -9,8 +9,7 @@ uint8_t mbslave_init(uint8_t slave_addr,
                      uint8_t* recv_buf,
                      uint8_t* send_buf,
                      const uint16_t RECV_BUF_LEN,
-                     const uint16_t SEND_BUF_LEN,
-                     pGetTickFunc get_tick_ms);
+                     const uint16_t SEND_BUF_LEN);
 void mbslave_poll(void);
 
 #endif /* MODBUS_SLAVE_H */
