@@ -5,8 +5,10 @@
 
 static volatile FlagStatus idle_flag = RESET; /* IDLE标志位 */
 
-uint8_t USART_RX_BUF[USART485_RX_BUF_SIZE] = {0}; /* 485串口接收缓冲 */
-uint8_t USART_TX_BUF[USART485_TX_BUF_SIZE] = {0}; /* 485串口发送缓冲 */
+#define USART485_RX_BUF_SIZE    256
+#define USART485_TX_BUF_SIZE    256
+extern uint8_t USART_TX_BUF[USART485_TX_BUF_SIZE];
+extern uint8_t USART_RX_BUF[USART485_RX_BUF_SIZE];
 
 /**
  * @brief  485使能引脚初始化

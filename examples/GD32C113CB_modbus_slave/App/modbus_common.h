@@ -41,15 +41,15 @@ typedef enum
 typedef struct
 {
     uint8_t addr;
-    SlaveSta_TypeDef sta;
-    uint16_t recv_len;
-    uint16_t send_len;
-    uint16_t recv_buf_len;
-    uint16_t send_buf_len;
+    const ModbusReg_TypeDef* reg_map_table;
     uint16_t map_num;
     uint8_t* recv_buf;
     uint8_t* send_buf;
-    const ModbusReg_TypeDef* reg_map_table;
+    uint16_t recv_buf_len;
+    uint16_t send_buf_len;    
+    SlaveSta_TypeDef sta;
+    uint16_t recv_len;
+    uint16_t send_len;    
 } ModbusSlave_TypeDef;
 
 /* modbus异常码 */

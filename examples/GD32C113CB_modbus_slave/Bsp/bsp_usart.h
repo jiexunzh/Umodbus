@@ -51,9 +51,6 @@ typedef struct
     uint32_t stopbits;
 } dataFormatTypeDef;
 
-extern uint8_t USART_TX_BUF[USART485_TX_BUF_SIZE];
-extern uint8_t USART_RX_BUF[USART485_RX_BUF_SIZE];
-
 void clear_USART_RX_BUF(void);
 void USART485_EN_init(void);
 void USART485_init(uint8_t bound_index, uint8_t dataFormat_index);

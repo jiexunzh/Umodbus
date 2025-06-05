@@ -1,6 +1,11 @@
 #include "bsp_dma.h"
 #include "nvic_config.h"
 
+#define USART485_RX_BUF_SIZE    256
+#define USART485_TX_BUF_SIZE    256
+extern uint8_t USART_TX_BUF[USART485_TX_BUF_SIZE];
+extern uint8_t USART_RX_BUF[USART485_RX_BUF_SIZE];
+
 static void DMA_TX_Init(void);
 static void DMA_RX_Init(void);
 
