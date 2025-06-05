@@ -41,7 +41,7 @@ static const uint16_t crc_table[256] = {
  * @param  ptr 数据指针
  * @param  len 数据长度（不包括CRC）
  * @retval CRC计算结果
- * @note   如果是Modbus，则LSB-MSB
+ * @note   如果是Modbus，则字节序为LSB-MSB
  */
 uint16_t crc16_calculate(const uint8_t* ptr, uint16_t len)
 {

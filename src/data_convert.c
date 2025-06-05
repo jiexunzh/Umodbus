@@ -1,9 +1,10 @@
 #include "data_convert.h"
 
 /**
- * @brief  将 uint32_t / int32_t 转换成4个u8（大端）
- * @param
- * @retval
+ * @brief  将 uint32_t / int32_t 数据转换成4个u8（大端）
+ * @param  input 输入的32位数据
+ * @param  buf u8数组指针
+ * @retval none
  */
 void u32_to_u8_BE(uint32_t input, uint8_t* buf)
 {
@@ -15,8 +16,9 @@ void u32_to_u8_BE(uint32_t input, uint8_t* buf)
 
 /**
  * @brief  将 uint32_t / int32_t 转换成4个u8（小端）
- * @param
- * @retval
+ * @param  input 输入的32位数据
+ * @param  buf u8数组指针
+ * @retval none
  */
 void u32_to_u8_LE(uint32_t input, uint8_t* buf)
 {
@@ -29,8 +31,9 @@ void u32_to_u8_LE(uint32_t input, uint8_t* buf)
 
 /**
  * @brief  将 uint16_t / int16_t 转换成2个u8（大端）
- * @param
- * @retval
+ * @param  input 输入的16位数据
+ * @param  buf u8数组指针
+ * @retval none
  */
 void u16_to_u8_BE(uint16_t input, uint8_t* buf)
 {
@@ -40,8 +43,9 @@ void u16_to_u8_BE(uint16_t input, uint8_t* buf)
 
 /**
  * @brief  将 uint16_t / int16_t 转换成2个u8（小端）
- * @param
- * @retval
+ * @param  input 输入的16位数据
+ * @param  buf u8数组指针
+ * @retval none
  */
 void u16_to_u8_LE(uint16_t input, uint8_t* buf)
 {
@@ -51,8 +55,9 @@ void u16_to_u8_LE(uint16_t input, uint8_t* buf)
 
 /**
  * @brief  将float转换成4个u8（大端）
- * @param
- * @retval
+ * @param  input 输入的float型数据
+ * @param  buf u8数组指针
+ * @retval none
  */
 void float_to_u8_BE(float input, uint8_t* buf)
 {
@@ -67,8 +72,9 @@ void float_to_u8_BE(float input, uint8_t* buf)
 
 /**
  * @brief  将float转换成4个u8（小端）
- * @param
- * @retval
+ * @param  input 输入的float型数据
+ * @param  buf u8数组指针
+ * @retval none
  */
 void float_to_u8_LE(float input, uint8_t* buf)
 {
@@ -83,8 +89,8 @@ void float_to_u8_LE(float input, uint8_t* buf)
 
 /**
  * @brief  将两个大端序的字节数组转换为u16
- * @param
- * @retval
+ * @param  BEbuf 字节数组指针
+ * @retval 转换结果
  */
 uint16_t BE_bytes_to_u16(uint8_t* BEbuf)
 {
@@ -92,9 +98,9 @@ uint16_t BE_bytes_to_u16(uint8_t* BEbuf)
 }
 
 /**
- * @brief  采用查表法将int转float
- * @param
- * @retval
+ * @brief  将int数据转换为float，最高支持7位小数
+ * @param  int_data int数据
+ * @retval 转换结果
  */
 float int2float(int32_t int_data, uint8_t dot)
 {
@@ -109,6 +115,7 @@ float int2float(int32_t int_data, uint8_t dot)
         1000000.0f,   // dot = 6
         10000000.0f,  // dot = 7
     };
+    /* 最大能计算的小数位数 */
     uint8_t max_dot = sizeof(dot_div_table) / sizeof(dot_div_table[0]) - 1;
 
     if (dot > max_dot)
