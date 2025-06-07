@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,GD32C11X</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\CMSIS;..\Libraries\CMSIS\GD\GD32C11x\Include;..\Libraries\GD32C11x_standard_peripheral\Include;..\Bsp;..\App;..\Utils</IncludePath>
+              <IncludePath>..\Libraries\CMSIS;..\Libraries\CMSIS\GD\GD32C11x\Include;..\Libraries\GD32C11x_standard_peripheral\Include;..\Bsp;..\App;..\Utils;..\Umodbus</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -393,30 +393,50 @@
               <FileType>1</FileType>
               <FilePath>..\App\main.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Umodbus</GroupName>
+          <Files>
             <File>
               <FileName>modbus_registers.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\App\modbus_registers.c</FilePath>
+              <FilePath>..\Umodbus\modbus_registers.c</FilePath>
             </File>
             <File>
               <FileName>modbus_slave.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\App\modbus_slave.c</FilePath>
+              <FilePath>..\Umodbus\modbus_slave.c</FilePath>
             </File>
             <File>
               <FileName>modbus_process.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\App\modbus_process.c</FilePath>
+              <FilePath>..\Umodbus\modbus_process.c</FilePath>
             </File>
             <File>
-              <FileName>modbus_basic.c</FileName>
+              <FileName>modbus_general.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\App\modbus_basic.c</FilePath>
+              <FilePath>..\Umodbus\modbus_general.c</FilePath>
             </File>
             <File>
               <FileName>modbus_port.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\App\modbus_port.c</FilePath>
+              <FilePath>..\Umodbus\modbus_port.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utils</GroupName>
+          <Files>
+            <File>
+              <FileName>crc16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Utils\crc16.c</FilePath>
+            </File>
+            <File>
+              <FileName>data_convert.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Utils\data_convert.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -442,21 +462,6 @@
               <FileName>bsp_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Bsp\bsp_usart.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Utils</GroupName>
-          <Files>
-            <File>
-              <FileName>crc16.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Utils\crc16.c</FilePath>
-            </File>
-            <File>
-              <FileName>data_convert.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Utils\data_convert.c</FilePath>
             </File>
           </Files>
         </Group>

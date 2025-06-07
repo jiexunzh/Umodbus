@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-uint16_t crc16_modbus(const uint8_t* ptr, uint16_t len);
+uint16_t crc16_calculate(const uint8_t* ptr, uint16_t len);
 
 #endif

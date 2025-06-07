@@ -37,13 +37,13 @@ static const uint16_t crc_table[256] = {
 };
 
 /**
- * @brief  查表法计算CRC-16(Modbus)
+ * @brief  查表法计算CRC-16
  * @param  ptr 数据指针
  * @param  len 数据长度（不包括CRC）
- * @retval Modbus CRC结算值，高字节在高位，低字节在低位
- * @note   若数据和数据长度包括了正确的CRC，则计算值为0
+ * @retval CRC计算结果
+ * @note   如果是Modbus，则字节序为LSB-MSB
  */
-uint16_t crc16_modbus(const uint8_t* ptr, uint16_t len)
+uint16_t crc16_calculate(const uint8_t* ptr, uint16_t len)
 {
     uint16_t crc = 0xFFFF;
 

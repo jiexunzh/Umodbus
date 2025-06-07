@@ -1,5 +1,5 @@
 #include "modbus_process.h"
-#include "modbus_basic.h"
+#include "modbus_general.h"
 #include "crc16.h"
 #include "data_convert.h"
 
@@ -133,7 +133,7 @@ void generate_crc_modbus(ModbusSlave_TypeDef* p_mbslave)
     uint16_t crc16;
     uint8_t crc_l, crc_h;
 
-    crc16 = crc16_modbus(p_mbslave->send_buf, p_mbslave->send_len);
+    crc16 = crc16_calculate(p_mbslave->send_buf, p_mbslave->send_len);
     crc_l = crc16 & 0xFF;        /* crc16 低八位 */
     crc_h = (crc16 >> 8) & 0xFF; /* crc16 高八位 */
 

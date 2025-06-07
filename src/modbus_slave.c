@@ -1,7 +1,7 @@
 #include "modbus_slave.h"
-#include "crc16.h"
-#include "modbus_port.h"
 #include "modbus_process.h"
+#include "modbus_port.h"
+#include "crc16.h"
 #include <string.h>
 
 static uint8_t modbus_verify(uint8_t slave_addr, uint8_t* recv_buf, uint8_t recv_len);

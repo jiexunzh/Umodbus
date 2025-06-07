@@ -1,7 +1,7 @@
 #include "modbus_slave.h"
-#include "crc16.h"
-#include "modbus_port.h"
 #include "modbus_process.h"
+#include "modbus_port.h"
+#include "crc16.h"
 #include <string.h>
 
 static uint8_t modbus_verify(uint8_t slave_addr, uint8_t* recv_buf, uint8_t recv_len);
@@ -99,7 +99,7 @@ static uint8_t modbus_verify(uint8_t slave_addr, uint8_t* recv_buf, uint8_t recv
         return FALSE;
     }
 
-    crc16 = crc16_modbus(recv_buf, recv_len - 2);
+    crc16 = crc16_calculate(recv_buf, recv_len - 2);
     crc_l = crc16 & 0xFF;        /* crc16 低八位 */
     crc_h = (crc16 >> 8) & 0xFF; /* crc16 高八位 */
     if (crc_l == recv_buf[recv_len - 2] && crc_h == recv_buf[recv_len - 1])

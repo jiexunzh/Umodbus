@@ -2,8 +2,7 @@
 #include "bsp_led.h"
 #include "bsp_systick.h"
 #include "bsp_usart.h"
-#include "modbus_registers.h"
-#include "modbus_slave.h"
+#include "modbus.h"
 
 #define MODBUS_SLAVE_ADDR    0x01
 #define USART485_RX_BUF_SIZE 256

@@ -1,5 +1,5 @@
 #include "modbus_process.h"
-#include "modbus_basic.h"
+#include "modbus_general.h"
 #include "crc16.h"
 #include "data_convert.h"
 

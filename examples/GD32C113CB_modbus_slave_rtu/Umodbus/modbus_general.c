@@ -1,14 +1,14 @@
 /**
  * *********************************************************************************
  * @author ZJX
- * @note 基于Modbus寄存器数据映射表，实现读写Modbus保持寄存器（03H、10H功能码）基础功能
+ * @note 基于Modbus寄存器数据映射表，实现读写Modbus保持寄存器（03H、10H功能码）通用功能
  *       适用于 Modbus RTU / Modbus TCP / Modbus over CANFD
  *       目前支持读写8位数据、16位数据、32位数据，32位数据需占用两个连续的Modbus寄存器，
  *       此时低寄存器存放高16位，高寄存器存放低16位。（并且每个寄存器仍是高字节在前，即模拟大端模式）
  *
  * **********************************************************************************
  */
-#include "modbus_basic.h"
+#include "modbus_general.h"
 
 static void write_high_16bits(uint32_t* p_data32, uint16_t data16);
 static void write_low_16bits(uint32_t* p_data32, uint16_t data16);

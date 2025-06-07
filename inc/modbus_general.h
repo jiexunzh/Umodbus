@@ -10,7 +10,7 @@
 #ifndef MODBUS_BASIC_H
 #define MODBUS_BASIC_H
 
-#include "modbus_common.h"
+#include "modbus_slave.h"
 
 typedef enum
 {
